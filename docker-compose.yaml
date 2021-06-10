@@ -6,7 +6,30 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/02 11:51:00 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/10 15:54:47 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+version: '3'
+
+services:
+  nginx:
+    build: ./nginx/Dockerfile
+    restart: always
+    ports:
+      - "443:443"
+  wordpress:
+    depends_on:
+      - nginx
+    build: ./wordpress/Dockerfile
+    restart: always
+    environment:
+      WORDPRESS_NGINX_HOST: db:3306
+      WORDPRESS_NGINX_USER: wordpress
+      WORDPRESS_NGINX_PASSWORD: wordpress
+      WORDPRESS_NGINX_NAME: wordpress
+    volumes:
+       - ~/home/barodrig/data:/data
+
+volumes:
+  data:
