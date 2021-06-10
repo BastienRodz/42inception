@@ -6,11 +6,12 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/10 12:07:34 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/10 15:02:58 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/10 16:14:46 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #Configuring Authorizations
+mkdir /var/www/html/
 chown -R www-data /var/www/*
 chmod -R 755 /var/www/*
 
