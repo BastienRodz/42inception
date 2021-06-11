@@ -1,27 +1,21 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    init_nginx.sh                                      :+:      :+:    :+:    #
+#    init_mariadb.sh                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/06/10 14:04:26 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/11 12:07:35 by barodrig         ###   ########.fr        #
+#    Created: 2021/02/10 12:07:34 by barodrig          #+#    #+#              #
+#    Updated: 2021/06/11 11:28:28 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+service mysql start
 
-#Configuring Authorizations
-chown -R www-data /var/www/*
-chmod -R 755 /var/www/*
-
-# Generate website file
-touch /var/www/html/index.php
-echo "<?php phpinfo(); ?>" >> /var/www/html/index.php
-
-#SSL Certificate Setting
-
-
-service nginx start
+#Configuring wordpress database
+echo "CREATE DATABASE wordpress;" | mysql -u root --skip-password
+echo "GRANT ALL PRIVILEGES ON wordpress.* TO 'root'@'localhost' WITH GRANT OPTION;" | mysql -u root --skip-password
+echo "update mysql.user set plugin='mysql_native_password' where user='root';" | mysql -u root --skip-password
+echo "FLUSH PRIVILEGES;" | mysql -u root --skip-password
 
 bash
