@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/11 11:56:41 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/11 13:03:44 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ version: '3'
 
 services:
   mariadb:
-    restart: always
+    #restart: always
 
     build:
       context: ./mariadb
@@ -23,7 +23,7 @@ services:
       - "3306:3306"
     environment:
       MARIA_LOGIN: "${MARIA_LOGIN}"
-      MARIA_PASSWORD: "${MARIA_PASSWORD}"
+      MARIA_PASSWORD: "${MARIA_PASS}"
     volumes:
       - ~/data/mariadb:/var/lib/mysql
     networks:
@@ -36,16 +36,16 @@ services:
     build:
       context: ./wordpress
       dockerfile: Dockerfile
-    restart: always
+    #restart: always
     ports:
       - "9000:9000"
     environment:
       MARIA_LOGIN: "${MARIA_LOGIN}"
-      MARIA_PASSWORD: "${MARIA_PASSWORD}"
+      MARIA_PASSWORD: "${MARIA_PASS}"
       WP_LOGIN: "${WP_LOGIN}"
-      WP_PASSWORD: "${WP_PASSWORD}"
-      WPU_1LOGIN: "${WPUSER1_LOGIN}"
-      WPU_1PASS: "${WPUSER1_PASSWORD}"
+      WP_PASSWORD: "${WP_PASS}"
+      WPU_1LOGIN: "${WPU_1LOGIN}"
+      WPU_1PASS: "${WPU_1PASS}"
     volumes:
       - ~/data/wp:/var/wwww/wp
     networks:
@@ -58,13 +58,13 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    restart: always
+    #restart: always
     ports:
       - "443:443"
-    extra-hosts:
-      - "barodrig.42.fr:127.0.0.1"
     networks:
       alliance:
+    extra_hosts:
+      - "barodrig.42.fr:127.0.0.1"
 
 
 volumes:

@@ -6,16 +6,9 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/10 12:07:34 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/10 16:14:46 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/11 13:16:12 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-#Configuring Authorizations
-mkdir /var/www/html/
-chown -R www-data /var/www/*
-chmod -R 755 /var/www/*
-
-service mysql start
 
 #Configuring wordpress database
 echo "CREATE DATABASE wordpress;" | mysql -u root --skip-password
@@ -36,12 +29,12 @@ cd ../../../../
 cd /tmp/
 wget https://wordpress.org/latest.tar.gz
 tar -xvf latest.tar.gz && rm -rf latest.tar.gz
-mv wordpress/ /var/www/html
-mv /tmp/wp-config.php /var/www/html/wordpress/
+mv wordpress/* /var/www/wordpress
+mv /tmp/wp-config.php /var/www/wordpress/
 cd ../
-rm /var/www/html/wordpress/wp-config-sample.php
-mkdir /var/www/html/phpmyadmin/tmp
+rm /var/www/wordpress/wp-config-sample.php
+mkdir /var/www/wordpress/phpmyadmin/tmp
 
-service php7.3-fpm start
+php7.3-fpm --nodaemonize
 
 bash

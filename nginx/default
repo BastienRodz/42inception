@@ -1,14 +1,15 @@
   server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name localhost www.localhost;
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name barodrig.42.fr;
 
-    ssl_certificate /etc/nginx/ssl/localhost.crt;
-    ssl_certificate_key /etc/nginx/ssl/localhost.key;
+    ssl_certificate /etc/nginx/ssl/wwww.barodrig.42.fr.crt;
+    ssl_certificate_key /etc/nginx/ssl/www.barodrig.42.fr.key;
+    ssl_protocol TLSv1.3 ;
 
-    root /var/www/html;
+    root /var/www/wp;
     autoindex on;
-    index index.html index.htm index.nginx-debian.html index.php;
+    index index.html index.php;
 	location / {
 		try_files $uri $uri/ =404;
 	}
