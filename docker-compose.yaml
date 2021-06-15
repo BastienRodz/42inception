@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 14:52:06 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/15 17:08:14 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,14 @@ services:
     build:
       context: ./mariadb
       dockerfile: Dockerfile
+    container_name: mariadb
     ports:
       - "3306:3306"
     environment:
       MARIA_LOGIN: "${MARIA_LOGIN}"
       MARIA_PASSWORD: "${MARIA_PASS}"
     volumes:
-      - ~/data/mysql:/var/lib/mysql
+      - volume_mariadb:/var/lib/mysql
     networks:
       - 42inception
     env_file: .env
@@ -33,6 +34,7 @@ services:
     build:
       context: ./wordpress
       dockerfile: Dockerfile
+    container_name: wordpress
     restart: on-failure
     ports:
       - "9000:9000"
@@ -44,7 +46,7 @@ services:
       WPU_1LOGIN: "${WPU_1LOGIN}"
       WPU_1PASS: "${WPU_1PASS}"
     volumes:
-      - ~/data/wp:/var/wwww/wp
+      - volume_wordpress:/var/wwww/wp
     networks:
       - 42inception
     env_file: .env
@@ -53,6 +55,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    container_name: nginx
     restart: on-failure
     ports:
       - "443:443"
@@ -61,6 +64,20 @@ services:
     extra_hosts:
       - "barodrig.42.fr:127.0.0.1"
       - "www.barodrig.42.fr:127.0.0.1"
+
+volumes:
+  volume_wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/barodrig/data/wordpress
+  volume_mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: /home/barodrig/data/mariadb
 
 networks:
   42inception:
