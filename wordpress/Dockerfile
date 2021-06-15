@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/10 11:11:46 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 16:31:36 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/15 16:46:57 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,4 +24,4 @@ COPY ./wp-config.php ./var/wwww/wordpress/wp-config.php
 
 EXPOSE 9000
 
-CMD ["sh", "php7.3-fpm --nodaemonize"]
+ENTRYPOINT [ "/usr/sbin/php-fpm7.3" ]
