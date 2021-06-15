@@ -6,8 +6,8 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/02/10 12:07:34 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 13:14:20 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/15 15:30:07 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-php7.3-fpm --nodaemonize
+start php7.3-fpm --nodaemonize
