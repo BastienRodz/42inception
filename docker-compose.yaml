@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 17:08:14 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/15 17:15:44 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ services:
       WPU_1LOGIN: "${WPU_1LOGIN}"
       WPU_1PASS: "${WPU_1PASS}"
     volumes:
-      - volume_wordpress:/var/wwww/wp
+      - volume_wordpress:/var/wwww/
     networks:
       - 42inception
     env_file: .env
@@ -71,13 +71,13 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/barodrig/data/wordpress
+      device: '~/home/barodrig/data/wordpress'
   volume_mariadb:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: /home/barodrig/data/mariadb
+      device: '~/home/barodrig/data/mariadb'
 
 networks:
   42inception:
