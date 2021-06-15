@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/11 13:03:44 by barodrig         ###   ########.fr        #
+#    Updated: 2021/06/15 14:52:06 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,7 @@ version: '3'
 
 services:
   mariadb:
-    #restart: always
-
+    restart: on-failure
     build:
       context: ./mariadb
       dockerfile: Dockerfile
@@ -25,18 +24,16 @@ services:
       MARIA_LOGIN: "${MARIA_LOGIN}"
       MARIA_PASSWORD: "${MARIA_PASS}"
     volumes:
-      - ~/data/mariadb:/var/lib/mysql
+      - ~/data/mysql:/var/lib/mysql
     networks:
-      alliance:
+      - 42inception
     env_file: .env
 
   wordpress:
-    depends_on:
-      - mariadb
     build:
       context: ./wordpress
       dockerfile: Dockerfile
-    #restart: always
+    restart: on-failure
     ports:
       - "9000:9000"
     environment:
@@ -49,28 +46,22 @@ services:
     volumes:
       - ~/data/wp:/var/wwww/wp
     networks:
-      alliance:
+      - 42inception
     env_file: .env
 
   nginx:
-    depends_on:
-      - wordpress
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    #restart: always
+    restart: on-failure
     ports:
       - "443:443"
     networks:
-      alliance:
+      - 42inception
     extra_hosts:
       - "barodrig.42.fr:127.0.0.1"
-
-
-volumes:
-  data:
-#    external: true
+      - "www.barodrig.42.fr:127.0.0.1"
 
 networks:
-  alliance:
+  42inception:
     driver: bridge
