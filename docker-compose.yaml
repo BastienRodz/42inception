@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/07/13 15:00:55 by barodrig         ###   ########.fr        #
+#    Updated: 2021/07/19 16:04:38 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ services:
       MARIA_DATABASE: "${MARIA_DATABASE}"
       MARIA_ROOT_PASSWORD: "${MARIA_ROOT_PASSWORD}"
     volumes:
-      - volume_mariadb:/var/lib/mysql/
+      - mariadb:/var/lib/mysql/
     networks:
       - 42inception
     env_file: .env
@@ -51,7 +51,7 @@ services:
       WPU_1PASS: "${WPU_1PASS}"
       WP_TABLE_PREFIX: "${WP_TABLE_PREFIX}"
     volumes:
-      - volume_wordpress:/var/www/html/
+      - wordpress:/var/www/html/
     networks:
       - 42inception
     env_file: .env
@@ -74,13 +74,13 @@ services:
       - "www.barodrig.42.fr:127.0.0.1"
 
 volumes:
-  volume_wordpress:
+  wordpress:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
       device: './data/wordpress'
-  volume_mariadb:
+  mariadb:
     driver: local
     driver_opts:
       type: 'none'
