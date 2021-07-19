@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/07/19 16:04:38 by barodrig         ###   ########.fr        #
+#    Updated: 2021/07/19 17:01:41 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ services:
     container_name: wordpress
     restart: always
     ports:
-      - "9000:9000"
+      - "9000:80"
     environment:
       MARIA_LOGIN: "${MARIA_LOGIN}"
       MARIA_PASSWORD: "${MARIA_PASS}"
@@ -50,6 +50,7 @@ services:
       WPU_1LOGIN: "${WPU_1LOGIN}"
       WPU_1PASS: "${WPU_1PASS}"
       WP_TABLE_PREFIX: "${WP_TABLE_PREFIX}"
+      WP_DB_HOST: mariadb:3306
     volumes:
       - wordpress:/var/www/html/
     networks:

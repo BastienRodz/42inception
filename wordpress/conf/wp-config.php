@@ -6,7 +6,7 @@ define( 'DB_USER', 'wordpress' );
 
 define( 'DB_PASSWORD', 'wordpress' );
 
-define( 'DB_HOST', 'db:3306' );
+define( 'DB_HOST', 'mariadb:3306' );
 
 define( 'DB_CHARSET', 'utf8' );
 
