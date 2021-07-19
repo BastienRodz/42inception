@@ -6,7 +6,7 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 17:15:44 by barodrig         ###   ########.fr        #
+#    Updated: 2021/07/13 15:00:55 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ version: '3'
 
 services:
   mariadb:
-    restart: on-failure
+    restart: always
     build:
       context: ./mariadb
       dockerfile: Dockerfile
@@ -24,18 +24,22 @@ services:
     environment:
       MARIA_LOGIN: "${MARIA_LOGIN}"
       MARIA_PASSWORD: "${MARIA_PASS}"
+      MARIA_DATABASE: "${MARIA_DATABASE}"
+      MARIA_ROOT_PASSWORD: "${MARIA_ROOT_PASSWORD}"
     volumes:
-      - volume_mariadb:/var/lib/mysql
+      - volume_mariadb:/var/lib/mysql/
     networks:
       - 42inception
     env_file: .env
 
   wordpress:
+    depends_on:
+      - mariadb
     build:
       context: ./wordpress
       dockerfile: Dockerfile
     container_name: wordpress
-    restart: on-failure
+    restart: always
     ports:
       - "9000:9000"
     environment:
@@ -45,18 +49,22 @@ services:
       WP_PASSWORD: "${WP_PASS}"
       WPU_1LOGIN: "${WPU_1LOGIN}"
       WPU_1PASS: "${WPU_1PASS}"
+      WP_TABLE_PREFIX: "${WP_TABLE_PREFIX}"
     volumes:
-      - volume_wordpress:/var/wwww/
+      - volume_wordpress:/var/www/html/
     networks:
       - 42inception
     env_file: .env
 
   nginx:
+    depends_on:
+      - wordpress
+      - mariadb
     build:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: nginx
-    restart: on-failure
+    restart: always
     ports:
       - "443:443"
     networks:
@@ -71,13 +79,13 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/home/barodrig/data/wordpress'
+      device: './data/wordpress'
   volume_mariadb:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '~/home/barodrig/data/mariadb'
+      device: './data/mariadb'
 
 networks:
   42inception:

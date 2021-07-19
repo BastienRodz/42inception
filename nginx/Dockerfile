@@ -6,16 +6,20 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/08 10:28:32 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 16:33:24 by barodrig         ###   ########.fr        #
+#    Updated: 2021/07/13 14:44:49 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-From debian:buster
+FROM	debian:buster
 
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get -y install vim && apt-get -y install nginx && apt-get -y install openssl
+RUN	apt-get update \
+	&& apt-get install -y nginx openssl \
+	&& rm /etc/nginx/nginx.conf
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY	./nginx.conf /etc/nginx/nginx.conf
+
+RUN	chmod 755 /var/www
+
 COPY ./hosts /etc/
 
 RUN mkdir /etc/nginx/ssl

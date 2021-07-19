@@ -6,19 +6,23 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/08 10:28:32 by barodrig          #+#    #+#              #
-#    Updated: 2021/06/15 15:43:31 by barodrig         ###   ########.fr        #
+#    Updated: 2021/07/13 15:14:32 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-From debian:buster
+FROM	debian:buster
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y procps && apt-get -y install vim && apt-get -y install mariadb-server
+RUN	apt-get update && apt-get upgrade -y && apt-get install -y wget vim bash \
+	mariadb-server mariadb-client gettext-base
 
-COPY ./init_mariadb.sh /init_mariadb.sh
-COPY ./my.cnf /my.cnf
+RUN	rm /etc/mysql/my.cnf \
+	&& echo "[mysqld]\ngeneral_log=1\nuser=root\nport=3306\nbind=0.0.0.0\nskip-networking=false" > /etc/mysql/my.cnf
 
-RUN chmod +x ./init_mariadb.sh && mv my.cnf etc/mysql/my.cnf && chmod 755 /etc/mysql/my.cnf
+COPY	./init_mysql.sh .
+
+RUN	chmod 755 ./init_mysql.sh \
+	&& chown -R mysql:mysql /var/lib/mysql
 
 EXPOSE 3306
 
-ENTRYPOINT ["sh", "./init_mariadb.sh"]
+ENTRYPOINT ["./init_mariadb.sh"]
