@@ -1,0 +1,89 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    docker-compose.yaml                                :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2021/06/02 11:50:59 by barodrig          #+#    #+#              #
+#    Updated: 2021/07/20 14:06:03 by barodrig         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+version: '3.9'
+
+services:
+  mariadb:
+    restart: on-failure
+    build:
+      context: ./mariadb
+      dockerfile: Dockerfile
+    image: mariadb
+    container_name: mariadb
+    environment:
+      DB_NAME: wp_db
+      DB_USER: username
+      DB_PASS: userpass
+      ROOT_PASS: user42
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - 42inception
+
+  wordpress:
+    depends_on:
+      - mariadb
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile
+    image: wordpress
+    container_name: wordpress
+    restart: on-failure
+    environment:
+      WP_ADPASS: chiefpass
+      WP_ADMIN: chief
+      WP_USER: username
+      WP_USPASS: userpass
+      DB_NAME: wp_db
+      DB_USER: username
+      DB_PASS: userpass
+      ROOT_PASS: user42
+    volumes:
+      - wordpress:/var/www
+    networks:
+      - 42inception
+
+  nginx:
+    depends_on:
+      - wordpress
+      - mariadb
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: nginx
+    container_name: nginx
+    restart: on-failure
+    ports:
+      - "443:443"
+    networks:
+      - 42inception
+    volumes:
+    - wordpress:/var/www
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/wordpress'
+  mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/mariadb'
+
+networks:
+  42inception:
+    driver: bridge
