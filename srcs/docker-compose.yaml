@@ -14,7 +14,7 @@ version: '3.9'
 
 services:
   mariadb:
-    restart: unless-stopped
+    restart: on-failure
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
       dockerfile: Dockerfile
     image: wp:inception
     container_name: wordpress
-    restart: always
+    restart: on-failure
     volumes:
       - wordpress:/var/www/html/wordpress
     env_file: 
@@ -52,7 +52,7 @@ services:
       dockerfile: Dockerfile
     image: nginx:inception
     container_name: nginx
-    restart: always
+    restart: on-failure
     hostname: localhost
     ports:
       - "443:443"
