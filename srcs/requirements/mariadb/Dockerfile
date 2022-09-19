@@ -6,25 +6,30 @@
 #    By: barodrig <barodrig@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/08 10:28:32 by barodrig          #+#    #+#              #
-#    Updated: 2021/07/20 15:07:14 by barodrig         ###   ########.fr        #
+#    Updated: 2022/09/19 16:42:15 by barodrig         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 FROM	debian:buster
 
 RUN	apt-get update && apt-get upgrade -y && apt-get install -y\
-	mariadb-server mariadb-client
+	mariadb-server && rm -rf /var/lib/apt/lists/*
+	
+RUN rm -rf /var/run/mysqld
+RUN mkdir /var/run/mysqld && chown -R mysql:mysql /var/run/mysqld/ && chmod -R 755 /var/run/mysqld/
+RUN mkdir -p /var/lib/mysql-files/ && mkdir -p /var/lib/mysqld/log/
 
-COPY	./conf/init_mysql.sh .
+RUN chown -R mysql:mysql /var/run/mysqld && chmod 777 /var/run/mysqld
 
-RUN	chmod 755 ./init_mysql.sh \
-	&& chown -R mysql:mysql /var/lib/mysql \
-	&& mkdir /run/mysqld && chown mysql /run/mysqld
+COPY	./tools/init_mysql.sh /usr/local/bin/
 
-RUN	mysql_install_db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal
+RUN	chmod +x /usr/local/bin/init_mysql.sh
 
-RUN sed -i "s|.*skip-networking.*|skip-networking = false|g" /etc/mysql/my.cnf && sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/mysql/my.cnf
+RUN chmod -R 777 /var/log/
+RUN chmod -R 777 /var/log/mysql 
 
 EXPOSE	3306
 
-ENTRYPOINT ["./init_mysql.sh"]
+ENTRYPOINT ["/usr/local/bin/init_mysql.sh"]
+
+CMD ["mysqld", "--bind-address=0.0.0.0", "--port=3306", "--log-error=/var/lib/mysql/error.log"]

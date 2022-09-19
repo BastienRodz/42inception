@@ -14,76 +14,71 @@ version: '3.9'
 
 services:
   mariadb:
-    restart: on-failure
+    restart: unless-stopped
     build:
-      context: ./mariadb
+      context: ./requirements/mariadb
       dockerfile: Dockerfile
-    image: mariadb
+    image: mariadb:inception
     container_name: mariadb
-    environment:
-      DB_NAME: wp_db
-      DB_USER: username
-      DB_PASS: userpass
-      ROOT_PASS: user42
+    ports:
+      - "3306:3306"
     volumes:
-      - mariadb:/var/lib/mysql
+      - db:/var/lib/mysql
     networks:
       - 42inception
+    env_file: ./requirements/.env
 
   wordpress:
     depends_on:
       - mariadb
     build:
-      context: ./wordpress
+      context: ./requirements/wordpress
       dockerfile: Dockerfile
-    image: wordpress
+    image: wp:inception
     container_name: wordpress
-    restart: on-failure
-    environment:
-      WP_ADPASS: chiefpass
-      WP_ADMIN: chief
-      WP_USER: username
-      WP_USPASS: userpass
-      DB_NAME: wp_db
-      DB_USER: username
-      DB_PASS: userpass
-      ROOT_PASS: user42
+    restart: always
     volumes:
-      - wordpress:/var/www
+      - wordpress:/var/www/html/wordpress
+    env_file: 
+      - ./requirements/.env
     networks:
       - 42inception
 
   nginx:
     depends_on:
       - wordpress
-      - mariadb
     build:
-      context: ./nginx
+      context: ./requirements/nginx
       dockerfile: Dockerfile
-    image: nginx
+    image: nginx:inception
     container_name: nginx
-    restart: on-failure
+    restart: always
+    hostname: localhost
     ports:
       - "443:443"
     networks:
       - 42inception
+    extra_hosts:
+      - "barodrig.42.fr:127.0.0.1"
+    env_file: 
+      - ./requirements/.env
     volumes:
-    - wordpress:/var/www
+      - wordpress:/var/www/html/wordpress
+
+networks:
+  42inception:
+    driver: bridge
 
 volumes:
   wordpress:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: './data/wordpress'
-  mariadb:
+      type: none
+      device: /Users/barodrig/42/42inception/srcs/requirements/data/wordpress
+      o: bind
+  db:
     driver: local
     driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: './data/mariadb'
-
-networks:
-  42inception:
-    driver: bridge
+      type: none
+      device: /Users/barodrig/42/42inception/srcs/requirements/data/db
+      o: bind
