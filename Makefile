@@ -1,20 +1,35 @@
 NAME = inception
-DIR = srcs
-START_CMD = sudo docker compose -p $(NAME) --project-directory $(DIR) up -d --build
-STOP_CMD = sudo docker compose --project-directory $(DIR) down
+YML = ./srcs/docker-compose.yaml
+START_CMD = docker-compose --project-name $(NAME) -f $(YML) up -d --build
+STOP_CMD = docker-compose -f $(YML) --project-name $(NAME) down
 
 all :
-	$(START_CMD)
+	@echo "--- Building local volumes folders... ---"
+	@sudo mkdir -p /home/barodrig/data/db
+	@sudo mkdir -p /home/barodrig/data/wordpress
+	@echo "--- Launching containers... ---"
+	@$(START_CMD)
+	@chmod -R 777 /home/barodrig/data
 
-stop :
-	$(STOP_CMD)
-	$(STOP_CMD) -v
-	rm -rf srcs/requirements/data/db/*
-	rm -rf srcs/requirements/data/wordpress/*
+start : all
 
-clean: stop
+up :
+	@echo "--- Launching containers... ---"
+	@$(START_CMD)
 
-fclean: clean
+down :
+	@echo "--- Stopping containers... ---"
+	@$(STOP_CMD)
+
+stop:
+	@$(STOP_CMD) -v
+	@docker stop $$(docker ps -qa) | true
+	@docker rm $$(docker ps -qa) | true
+	@rm -rf /home/barodrig/data/db/*
+	@rm -rf /home/barodrig/data/wordpress/*
+	@docker network rm $$(docker network ls -q) | true
+
+fclean: stop
 		docker system prune -a
 
-re : stop clean all
+re : fclean all
